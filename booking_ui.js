@@ -1,15 +1,9 @@
 /**
- * ELSMITH Booking UI - Professional Multi-Step Scheduler
- * Optimized for Vercel, Node.js API, and stable UI/UX.
+ * ELSMITH Booking UI - Full Multi-Step Scheduler
+ * Highly optimized for production stability and Vercel.
  */
 (() => {
-  const SESSION_TYPES = [
-    'Executive Coaching',
-    'Leadership Coaching',
-    'Business / Workforce Advisory',
-    'Consultation',
-    'General Enquiry'
-  ];
+  const SESSION_TYPES = ['Executive Coaching', 'Leadership Coaching', 'Business Advisory', 'Consultation', 'General Enquiry'];
   const WAT = 'Africa/Lagos';
   let modal = null;
   let availability = { dates: new Set(), timezone: WAT };
@@ -38,10 +32,10 @@
   const modalShell = () => `
     <div class="elsmith-modal-backdrop" data-booking-backdrop>
       <section class="elsmith-booking-modal" role="dialog" aria-modal="true">
-        <button class="elsmith-modal-close" type="button" data-booking-close aria-label="Close">&times;</button>
+        <button class="elsmith-modal-close" type="button" data-booking-close>&times;</button>
         <div class="elsmith-booking-header">
           <p class="elsmith-eyebrow">ELSMITH CONSULTING</p>
-          <h2 id="elsmith-booking-title">Book a Session</h2>
+          <h2>Book a Session</h2>
           <p>Choose a convenient time for a conversation with our team.</p>
         </div>
         <div class="elsmith-booking-steps">
@@ -53,9 +47,9 @@
 
   const openModal = async () => {
     if (!modal) {
-      modal = document.createElement('div');
-      modal.innerHTML = modalShell();
-      document.body.append(modal.firstElementChild);
+      const div = document.createElement('div');
+      div.innerHTML = modalShell();
+      document.body.append(div.firstElementChild);
       modal = document.querySelector('[data-booking-backdrop]');
       modal.querySelector('[data-booking-close]').onclick = closeModal;
       modal.onclick = (e) => { if (e.target === modal) closeModal(); };
@@ -68,12 +62,7 @@
     renderStep();
   };
 
-  const closeModal = () => {
-    if (modal) {
-      modal.classList.remove('is-open');
-      document.body.classList.remove('elsmith-modal-open');
-    }
-  };
+  const closeModal = () => { if (modal) { modal.classList.remove('is-open'); document.body.classList.remove('elsmith-modal-open'); } };
 
   const renderCalendar = () => {
     const s = modal._state;
@@ -85,29 +74,17 @@
     let cells = '';
     for (let i = 0; i < offset; i++) cells += '<span class="elsmith-calendar-empty"></span>';
     for (let d = 1; d <= days; d++) {
-      const date = `${view.getFullYear()}-${String(view.getMonth() + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      const isPast = date < todayString();
-      const isAvailable = availability.dates.has(date);
-      const disabled = isPast || !isAvailable;
-      const selected = date === s.date ? ' is-selected' : '';
-      cells += `<button class="elsmith-calendar-day${selected}" type="button" data-date="${date}" ${disabled ? 'disabled' : ''}>${d}</button>`;
+      const date = `${view.getFullYear()}-${String(view.getMonth() + 1).padStart(2, '0')}-${String(day = d).padStart(2, '0')}`;
+      const disabled = date < todayString() || !availability.dates.has(date);
+      cells += `<button class="elsmith-calendar-day${date === s.date ? ' is-selected' : ''}" type="button" data-date="${date}" ${disabled ? 'disabled' : ''}>${d}</button>`;
     }
-    return `
-      <div class="elsmith-calendar-toolbar">
-        <button type="button" class="elsmith-icon-button" data-month="prev">‹</button>
-        <strong>${label}</strong>
-        <button type="button" class="elsmith-icon-button" data-month="next">›</button>
-      </div>
-      <div class="elsmith-calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
-      <div class="elsmith-calendar-grid">${cells}</div>`;
+    return `<div class="elsmith-calendar-toolbar"><button type="button" data-month="prev">‹</button><strong>${label}</strong><button type="button" data-month="next">›</button></div><div class="elsmith-calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="elsmith-calendar-grid">${cells}</div>`;
   };
 
   const renderStep = () => {
-    if (!modal) return;
     const s = modal._state;
     modal.querySelectorAll('[data-step-dot]').forEach(dot => dot.classList.toggle('is-active', Number(dot.dataset.stepDot) <= s.step));
     const body = modal.querySelector('[data-booking-body]');
-
     if (s.step === 1) {
       body.innerHTML = `<h3>Select a date</h3>${renderCalendar()}<div class="elsmith-booking-actions"><button class="elsmith-booking-primary" type="button" data-next disabled>Continue</button></div>`;
       body.querySelectorAll('[data-date]').forEach(btn => btn.onclick = () => { s.date = btn.dataset.date; body.querySelector('[data-next]').disabled = false; body.querySelectorAll('[data-date]').forEach(b => b.classList.remove('is-selected')); btn.classList.add('is-selected'); });
@@ -115,7 +92,6 @@
       body.querySelector('[data-month="next"]').onclick = () => { s.month.setMonth(s.month.getMonth() + 1); renderStep(); };
       body.querySelector('[data-next]').onclick = async () => {
         body.querySelector('[data-next]').disabled = true;
-        body.querySelector('[data-next]').textContent = 'Loading times...';
         try {
           const res = await fetch(`/api/availability?date=${s.date}`);
           const data = await res.json();
@@ -128,110 +104,37 @@
       body.querySelector('[data-back]').onclick = () => { s.step = 1; renderStep(); };
       body.querySelectorAll('[data-time]').forEach(btn => btn.onclick = () => { s.time = btn.dataset.time; s.step = 3; renderStep(); });
     } else if (s.step === 3) {
-      body.innerHTML = `
-        <button class="elsmith-back-link" type="button" data-back>← Change time</button>
-        <h3>Your details</h3>
-        <form class="elsmith-booking-form space-y-4">
-          <label class="block"><span class="text-sm font-bold">Full name</span><input name="name" required class="w-full px-4 py-2 border rounded-lg"></label>
-          <label class="block"><span class="text-sm font-bold">Email address</span><input name="email" type="email" required class="w-full px-4 py-2 border rounded-lg"></label>
-          <label class="block"><span class="text-sm font-bold">Phone number</span><input name="phone" type="tel" required class="w-full px-4 py-2 border rounded-lg"></label>
-          <label class="block"><span class="text-sm font-bold">Session type</span><select name="session_type" required class="w-full px-4 py-2 border rounded-lg"><option value="">Select type</option>${SESSION_TYPES.map(t => `<option>${t}</option>`).join('')}</select></label>
-          <label class="block"><span class="text-sm font-bold">Message</span><textarea name="message" rows="3" class="w-full px-4 py-2 border rounded-lg"></textarea></label>
-          <div class="elsmith-booking-actions"><button class="elsmith-booking-primary" type="submit">Review</button></div>
-        </form>`;
+      body.innerHTML = `<button class="elsmith-back-link" type="button" data-back>← Change time</button><h3>Your details</h3><form class="elsmith-booking-form space-y-3"><label>Full name<input name="name" required></label><label>Email address<input name="email" type="email" required></label><label>Phone number<input name="phone" type="tel" required></label><label>Session type<select name="session_type" required><option value="">Select type</option>${SESSION_TYPES.map(t => `<option>${t}</option>`).join('')}</select></label><label>Message<textarea name="message" rows="2"></textarea></label><div class="elsmith-booking-actions"><button class="elsmith-booking-primary" type="submit">Review</button></div></form>`;
       body.querySelector('[data-back]').onclick = () => { s.step = 2; renderStep(); };
       body.querySelector('form').onsubmit = (e) => { e.preventDefault(); s.details = Object.fromEntries(new FormData(e.target)); s.step = 4; renderStep(); };
     } else if (s.step === 4) {
-      body.innerHTML = `
-        <button class="elsmith-back-link" type="button" data-back>← Edit details</button>
-        <h3>Review & Confirm</h3>
-        <div class="elsmith-review bg-secondary/10 p-4 rounded-lg space-y-2">
-          <p><strong>Date:</strong> ${formatDate(s.date)}</p>
-          <p><strong>Time:</strong> ${formatTime(s.time)} WAT</p>
-          <p><strong>Name:</strong> ${s.details.name}</p>
-        </div>
-        <div class="elsmith-booking-actions"><button class="elsmith-booking-primary" type="button" data-confirm>Confirm Booking</button></div>`;
+      body.innerHTML = `<button class="elsmith-back-link" type="button" data-back>← Edit details</button><h3>Review & Confirm</h3><div class="elsmith-review"><strong>Date:</strong> ${formatDate(s.date)}<br><strong>Time:</strong> ${formatTime(s.time)} WAT<br><strong>Name:</strong> ${s.details.name}</div><div class="elsmith-booking-actions"><button class="elsmith-booking-primary" type="button" data-confirm>Confirm Booking</button></div>`;
       body.querySelector('[data-back]').onclick = () => { s.step = 3; renderStep(); };
       body.querySelector('[data-confirm]').onclick = async (e) => {
         e.target.disabled = true; e.target.textContent = 'Submitting...';
         try {
           const res = await fetch('/api/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...s.details, date: s.date, time: s.time }) });
           const data = await res.json();
-          if (data.success) {
-            body.innerHTML = `<div class="text-center space-y-4"><div class="text-4xl text-green-500">✓</div><h3>Booking Requested</h3><p>${data.message}</p><button class="elsmith-booking-primary" onclick="location.reload()">Done</button></div>`;
-          } else throw new Error(data.error);
+          if (data.success) body.innerHTML = `<div class="text-center space-y-4"><h3>Booking Requested</h3><p>${data.message}</p><button class="elsmith-booking-primary" onclick="location.reload()">Done</button></div>`;
+          else throw new Error(data.error);
         } catch (err) { alert(err.message); e.target.disabled = false; e.target.textContent = 'Confirm Booking'; }
       };
     }
   };
 
-  const enhanceContactForm = () => {
-    const form = document.querySelector('form');
-    // Only enhance the actual contact page form, not the booking modal form
-    if (!form || form.closest('.elsmith-booking-modal') || form.dataset.elsmithEnhanced) return;
-
-    form.dataset.elsmithEnhanced = 'true';
-    const messageContainer = form.querySelector('textarea[name="message"]')?.parentElement;
-    if (messageContainer) {
-      const extra = document.createElement('div');
-      extra.className = "grid grid-cols-1 md:grid-cols-2 gap-4 mb-4";
-      extra.innerHTML = `
-        <div>
-          <label class="block text-sm font-bold text-primary mb-2">Phone number</label>
-          <input name="phone" type="tel" placeholder="+234..." class="w-full px-4 py-3 rounded-lg border border-secondary outline-none focus:ring-2 focus:ring-accent">
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-primary mb-2">Company / organisation</label>
-          <input name="company" placeholder="Your company" class="w-full px-4 py-3 rounded-lg border border-secondary outline-none focus:ring-2 focus:ring-accent">
-        </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-bold text-primary mb-2">Subject / reason</label>
-          <select name="subject" class="w-full px-4 py-3 rounded-lg border border-secondary outline-none focus:ring-2 focus:ring-accent">
-            <option value="">Select a reason</option>
-            <option>Executive Coaching</option>
-            <option>Leadership Development</option>
-            <option>Business Advisory</option>
-            <option>General Enquiry</option>
-          </select>
-        </div>
-        <input class="elsmith-honeypot" name="website" tabindex="-1" autocomplete="off" style="display:none">
-      `;
-      messageContainer.before(extra);
-    }
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      const original = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Sending...';
-      try {
-        const res = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.fromEntries(new FormData(form)))
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error);
-        alert('Success: ' + data.message);
-        form.reset();
-      } catch (err) { alert('Error: ' + err.message); }
-      finally { btn.disabled = false; btn.textContent = original; }
-    };
-  };
-
   const init = () => {
+    if (window._elsmith_booking_bound) return;
+    window._elsmith_booking_bound = true;
     document.addEventListener('click', e => {
       const btn = e.target.closest('a, button');
       if (!btn) return;
       const txt = btn.textContent.toLowerCase();
-      if (txt.includes('book a session') || txt.includes('schedule your time')) {
+      if (txt.includes('book a session') || txt.includes('schedule your time') || txt.includes('go to booking page') || btn.classList.contains('elsmith-trigger-booking')) {
         e.preventDefault(); openModal();
       }
     });
-    enhanceContactForm();
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   };
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-  setInterval(enhanceContactForm, 3000);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
