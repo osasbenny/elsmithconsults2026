@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="elsmithconsulting-website">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/distv10.zip!/" />
+      <root url="jar://$PROJECT_DIR$/distv15.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

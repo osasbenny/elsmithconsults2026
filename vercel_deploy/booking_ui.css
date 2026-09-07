@@ -1,0 +1,67 @@
+/* Mobile-first booking and form UX layer. Brand colors remain aligned with the existing ELSMITH palette. */
+:root { --elsmith-navy: #163b75; --elsmith-ink: #1f2d3d; --elsmith-accent: #e97b3f; --elsmith-line: #d9e2ee; --elsmith-soft: #f5f8fb; }
+body.elsmith-modal-open { overflow: hidden; }
+.elsmith-modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: none; align-items: flex-end; justify-content: center; background: rgba(15, 31, 56, .62); padding: 0; }
+.elsmith-modal-backdrop.is-open { display: flex; animation: elsmith-fade-in .18s ease-out; }
+.elsmith-booking-modal { width: 100%; max-height: 100dvh; overflow: auto; background: #fff; color: var(--elsmith-ink); box-shadow: 0 -12px 40px rgba(15, 31, 56, .2); animation: elsmith-sheet-in .22s ease-out; }
+.elsmith-modal-close { position: absolute; top: .75rem; right: .75rem; z-index: 2; width: 2.5rem; height: 2.5rem; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.elsmith-modal-close:focus-visible, .elsmith-icon-button:focus-visible, .elsmith-calendar-day:focus-visible, .elsmith-time-button:focus-visible, .elsmith-booking-primary:focus-visible, .elsmith-booking-secondary:focus-visible, .elsmith-back-link:focus-visible { outline: 3px solid rgba(233,123,63,.45); outline-offset: 2px; }
+.elsmith-booking-header { position: relative; padding: 2.25rem 1.25rem 1.25rem; background: var(--elsmith-navy); color: #fff; }
+.elsmith-eyebrow { margin: 0 0 .45rem; color: #f5c5a7; font-size: .7rem; font-weight: 700; letter-spacing: .14em; }
+.elsmith-booking-header h2 { margin: 0; font-size: clamp(1.65rem, 7vw, 2.1rem); line-height: 1.1; }
+.elsmith-booking-header p:last-child { margin: .6rem 0 0; color: #dce8f6; font-size: .95rem; }
+.elsmith-booking-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: .25rem; padding: .8rem 1rem; border-bottom: 1px solid var(--elsmith-line); background: #fff; color: #7a8ba3; font-size: .68rem; font-weight: 700; text-align: center; }
+.elsmith-booking-steps span { padding: .35rem .1rem; border-bottom: 2px solid transparent; }
+.elsmith-booking-steps span.is-active { border-color: var(--elsmith-accent); color: var(--elsmith-navy); }
+.elsmith-booking-body { padding: 1.25rem; }
+.elsmith-booking-body h3 { margin: 0; color: var(--elsmith-navy); font-size: 1.35rem; }
+.elsmith-step-copy { margin: .45rem 0 1rem; color: #64748b; font-size: .9rem; }
+.elsmith-calendar-toolbar { display: grid; grid-template-columns: 2.5rem 1fr 2.5rem; align-items: center; gap: .5rem; margin-bottom: .9rem; text-align: center; color: var(--elsmith-navy); }
+.elsmith-icon-button { width: 2.5rem; height: 2.5rem; border: 1px solid var(--elsmith-line); border-radius: .55rem; background: #fff; color: var(--elsmith-navy); font-size: 1.35rem; cursor: pointer; }
+.elsmith-calendar-weekdays, .elsmith-calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .35rem; }
+.elsmith-calendar-weekdays { margin-bottom: .35rem; color: #7a8ba3; font-size: .68rem; font-weight: 700; text-align: center; }
+.elsmith-calendar-day { min-height: 2.5rem; border: 1px solid transparent; border-radius: .6rem; background: var(--elsmith-soft); color: var(--elsmith-ink); font-weight: 600; cursor: pointer; }
+.elsmith-calendar-day:not(:disabled):hover { border-color: var(--elsmith-accent); background: #fff8f4; }
+.elsmith-calendar-day:disabled { background: #fafbfc; color: #c5cfdb; cursor: not-allowed; }
+.elsmith-calendar-day.is-selected { border-color: var(--elsmith-accent); background: var(--elsmith-accent); color: #fff; }
+.elsmith-helper { margin: 1rem 0 0; color: #718198; font-size: .75rem; line-height: 1.5; }
+.elsmith-time-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .65rem; }
+.elsmith-time-button { min-height: 3rem; border: 1px solid var(--elsmith-line); border-radius: .65rem; background: #fff; color: var(--elsmith-navy); font-weight: 700; cursor: pointer; }
+.elsmith-time-button:hover { border-color: var(--elsmith-accent); background: #fff8f4; }
+.elsmith-booking-form, .elsmith-contact-extra { display: grid; gap: .9rem; }
+.elsmith-booking-form label, .elsmith-contact-extra label { display: grid; gap: .35rem; color: var(--elsmith-navy); font-size: .82rem; font-weight: 700; }
+.elsmith-booking-form input, .elsmith-booking-form select, .elsmith-booking-form textarea, .elsmith-contact-extra input, .elsmith-contact-extra select { width: 100%; min-height: 2.9rem; box-sizing: border-box; border: 1px solid var(--elsmith-line); border-radius: .55rem; padding: .7rem .75rem; background: #fff; color: var(--elsmith-ink); font: inherit; font-size: 1rem; }
+.elsmith-booking-form textarea { resize: vertical; }
+.elsmith-booking-form input:focus, .elsmith-booking-form select:focus, .elsmith-booking-form textarea:focus, .elsmith-contact-extra input:focus, .elsmith-contact-extra select:focus { border-color: var(--elsmith-accent); outline: 3px solid rgba(233,123,63,.15); }
+.elsmith-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; }
+.elsmith-booking-actions { display: flex; gap: .65rem; margin-top: 1.1rem; }
+.elsmith-booking-primary, .elsmith-booking-secondary { min-height: 3rem; border: 0; border-radius: .55rem; padding: .75rem 1rem; font: inherit; font-weight: 800; cursor: pointer; }
+.elsmith-booking-primary { flex: 1; background: var(--elsmith-accent); color: #fff; }
+.elsmith-booking-primary:hover { background: #d96830; }
+.elsmith-booking-primary:disabled { opacity: .55; cursor: wait; }
+.elsmith-booking-secondary { background: var(--elsmith-soft); color: var(--elsmith-navy); }
+.elsmith-back-link { display: inline-block; margin-bottom: 1rem; border: 0; padding: 0; background: transparent; color: var(--elsmith-navy); font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.elsmith-review { margin-top: 1rem; border: 1px solid var(--elsmith-line); border-radius: .7rem; padding: .85rem; background: var(--elsmith-soft); }
+.elsmith-review dl, .elsmith-success dl { display: grid; grid-template-columns: 7rem 1fr; gap: .65rem .75rem; margin: 0; font-size: .86rem; }
+.elsmith-review dt, .elsmith-success dt { color: #708197; font-weight: 700; }
+.elsmith-review dd, .elsmith-success dd { margin: 0; color: var(--elsmith-ink); font-weight: 600; overflow-wrap: anywhere; }
+.elsmith-booking-error, .elsmith-form-status.is-error { margin: .85rem 0; color: #a5362b; font-size: .88rem; line-height: 1.5; }
+.elsmith-success { text-align: center; }
+.elsmith-success-mark { display: grid; width: 3rem; height: 3rem; margin: 0 auto 1rem; place-items: center; border-radius: 999px; background: #e7f6ee; color: #1d7a4a; font-size: 1.5rem; font-weight: 900; }
+.elsmith-success p { color: #64748b; font-size: .9rem; }
+.elsmith-success dl { margin: 1.25rem 0; text-align: left; }
+.elsmith-form-status { margin-top: .8rem; color: #64748b; font-size: .88rem; line-height: 1.5; }
+.elsmith-form-status.is-success { color: #1d7a4a; }
+.elsmith-contact-extra { margin-bottom: .9rem; }
+@keyframes elsmith-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes elsmith-sheet-in { from { transform: translateY(1rem); opacity: .8; } to { transform: translateY(0); opacity: 1; } }
+@media (min-width: 700px) {
+  .elsmith-modal-backdrop { align-items: center; padding: 1.25rem; }
+  .elsmith-booking-modal { max-width: 680px; max-height: min(820px, 94dvh); border-radius: 1rem; box-shadow: 0 24px 80px rgba(15,31,56,.3); }
+  .elsmith-modal-close { top: 1rem; right: 1rem; }
+  .elsmith-booking-header { padding: 2.25rem 2rem 1.5rem; border-radius: 1rem 1rem 0 0; }
+  .elsmith-booking-body { padding: 1.75rem 2rem 2rem; }
+  .elsmith-contact-extra { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .elsmith-contact-extra label:last-of-type { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) { .elsmith-modal-backdrop.is-open, .elsmith-booking-modal { animation: none; } * { scroll-behavior: auto !important; } }

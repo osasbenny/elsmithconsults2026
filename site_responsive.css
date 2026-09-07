@@ -1,0 +1,61 @@
+/* ELSMITH 2026 responsive UX layer: mobile first, brand-preserving, restrained and accessible. */
+:root { --elsmith-navy: #163b75; --elsmith-ink: #1f2d3d; --elsmith-accent: #e97b3f; --elsmith-line: #d9e2ee; --elsmith-soft: #f5f8fb; }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; background: #fff; color: var(--elsmith-ink); }
+#root { min-width: 0; }
+#root img { max-width: 100%; height: auto; }
+#root .container { width: 100%; max-width: 1200px; box-sizing: border-box; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+#root nav { transition: background-color .2s ease, box-shadow .2s ease; }
+#root nav .container { min-height: 4.25rem; }
+#root nav img { max-height: 3.5rem; width: auto; object-fit: contain; }
+#root nav a, #root nav button, #root button, #root [role="button"] { min-height: 2.75rem; }
+#root nav a { display: inline-flex; align-items: center; }
+#root h1, #root h2, #root h3, #root h4, #root h5 { text-wrap: balance; }
+#root h1 { font-size: clamp(2.15rem, 6vw, 4.1rem); line-height: 1.06; letter-spacing: -.025em; }
+#root h2 { font-size: clamp(1.75rem, 4vw, 2.7rem); line-height: 1.12; letter-spacing: -.018em; }
+#root h3 { font-size: clamp(1.15rem, 2.5vw, 1.65rem); line-height: 1.2; }
+#root p, #root li { line-height: 1.65; }
+#root section { overflow: clip; }
+#root input, #root select, #root textarea { max-width: 100%; box-sizing: border-box; font-size: 1rem; }
+#root input:focus-visible, #root select:focus-visible, #root textarea:focus-visible, #root a:focus-visible, #root button:focus-visible { outline: 3px solid rgba(233,123,63,.38); outline-offset: 2px; }
+#root a[class*="bg-accent"], #root button[class*="bg-accent"], #root a[class*="bg-primary"], #root button[class*="bg-primary"] { min-height: 2.9rem; padding-inline: 1.1rem; }
+#root footer { overflow: hidden; }
+#root footer a { min-height: 2rem; }
+.elsmith-mobile-menu-button { display: inline-flex; width: 2.75rem; height: 2.75rem; margin-left: auto; flex-direction: column; align-items: center; justify-content: center; gap: .28rem; border: 1px solid var(--elsmith-line); border-radius: .55rem; background: #fff; color: var(--elsmith-navy); cursor: pointer; }
+.elsmith-mobile-menu-button span { display: block; width: 1.15rem; height: 2px; background: currentColor; }
+.elsmith-mobile-drawer { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; border-top: 1px solid var(--elsmith-line); border-bottom: 1px solid var(--elsmith-line); background: rgba(255,255,255,.98); box-shadow: 0 14px 24px rgba(15,31,56,.12); }
+.elsmith-mobile-nav-link { display: flex !important; min-height: 3.35rem !important; align-items: center; border-bottom: 1px solid #edf1f6; padding: .7rem 1rem; color: var(--elsmith-navy) !important; font-weight: 700; }
+.elsmith-mobile-nav-link:last-child { border-bottom: 0; }
+@media (max-width: 767px) {
+  #root nav { position: sticky; top: 0; z-index: 60; background: rgba(255,255,255,.96); backdrop-filter: blur(10px); }
+  #root nav > div > div[class*="md:flex"], #root nav > div > div[class*="md:block"] { display: none !important; }
+  #root nav .container { padding-inline: 1rem; }
+  #root section[class*="py-20"], #root section[class*="py-24"], #root section[class*="py-28"] { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+  #root section[class*="py-16"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+  #root section[class*="py-12"] { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+  #root .grid[class*="md:grid-cols-2"], #root .grid[class*="md:grid-cols-3"], #root .grid[class*="md:grid-cols-4"], #root .grid[class*="md:grid-cols-5"] { grid-template-columns: minmax(0, 1fr) !important; }
+  #root .flex[class*="md:flex-row"] { flex-direction: column !important; }
+  #root [class*="md:w-1/2"], #root [class*="md:w-2/5"], #root [class*="md:w-3/5"] { width: 100% !important; }
+  #root .gap-8 { gap: 1.35rem !important; }
+  #root .gap-12 { gap: 1.75rem !important; }
+  #root .p-12 { padding: 1.25rem !important; }
+  #root .p-8 { padding: 1.25rem !important; }
+  #root .text-5xl, #root .text-6xl { font-size: clamp(2.15rem, 11vw, 3.35rem) !important; line-height: 1.06 !important; }
+  #root .text-4xl { font-size: clamp(1.75rem, 8vw, 2.35rem) !important; }
+  #root .text-3xl { font-size: clamp(1.45rem, 7vw, 2rem) !important; }
+  #root .text-xl { font-size: 1.05rem !important; }
+  #root .max-w-4xl, #root .max-w-3xl, #root .max-w-2xl { max-width: 100% !important; }
+  #root footer .grid { gap: 1.75rem !important; }
+  #root footer .flex { flex-wrap: wrap; }
+}
+@media (min-width: 768px) {
+  .elsmith-mobile-menu-button, .elsmith-mobile-drawer { display: none !important; }
+  #root nav .container { min-height: 4.75rem; }
+}
+@media (min-width: 1200px) {
+  #root .container { padding-inline: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

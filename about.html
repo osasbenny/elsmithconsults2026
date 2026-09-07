@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <title>About Us | Elsmith Consulting LTD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/index-Ow2yCcMq.css">
+  <link rel="stylesheet" href="site_responsive.css">
+
+  <style>
+    body { font-family: 'Lato', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+    .elsmith-mobile-drawer { display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: white; z-index: 40; flex-direction: column; padding: 2rem; gap: 1.5rem; }
+  </style>
+</head>
+
+<body>
+  <div id="site-wrapper">
+    <nav class="sticky top-0 z-50 bg-white border-b border-secondary">
+      <div class="container flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition">
+          <img src="logo.jpg" alt="ELSMITH Consulting" class="h-12 w-auto" />
+        </a>
+        <div class="hidden md:flex gap-8">
+          <a href="index.html" class="text-foreground hover:text-accent transition">Home</a>
+          <a href="about.html" class="text-foreground hover:text-accent transition font-bold">About</a>
+          <a href="services.html" class="text-foreground hover:text-accent transition">Services</a>
+          <a href="programs.html" class="text-foreground hover:text-accent transition">Programs</a>
+          <a href="contact.html" class="text-foreground hover:text-accent transition">Contact</a>
+          <a href="contact.html" class="text-foreground hover:text-accent transition font-medium">Book a Session</a>
+        </div>
+        <button type="button" class="elsmith-mobile-menu-button md:hidden flex flex-col gap-1.5 p-2">
+          <span class="w-6 h-0.5 bg-primary"></span>
+          <span class="w-6 h-0.5 bg-primary"></span>
+          <span class="w-6 h-0.5 bg-primary"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="elsmith-mobile-drawer">
+      <a href="index.html" class="text-xl">Home</a>
+      <a href="about.html" class="text-xl font-bold">About</a>
+      <a href="services.html" class="text-xl">Services</a>
+      <a href="programs.html" class="text-xl">Programs</a>
+      <a href="contact.html" class="text-xl">Contact</a>
+    </div>
+
+    <main>
+      <section class="bg-gradient-to-br from-primary to-blue-900 text-white py-20 md:py-28">
+        <div class="container">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6">About Us</h1>
+          <p class="text-xl text-blue-100 max-w-3xl">Enabling business excellence through strategic advisory and leadership development.</p>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24">
+        <div class="container">
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 class="text-3xl font-bold text-primary mb-6">Our Profile</h2>
+              <p class="text-lg text-foreground leading-relaxed mb-6">
+                ELSMITH Consulting is a performance-focused organisation dedicated to enabling business excellence and driving impactful transformation. We specialize in workforce advisory, leadership development, and strategic insights.
+              </p>
+              <p class="text-lg text-foreground leading-relaxed">
+                Our approach combines global best practices with deep local understanding to help organizations across Africa, Europe, and the Middle East thrive in complex environments.
+              </p>
+            </div>
+            <div class="bg-secondary/10 rounded-2xl p-8 border border-secondary">
+              <h3 class="text-2xl font-bold text-primary mb-6">Our Values</h3>
+              <ul class="space-y-4">
+                <li><strong class="text-primary">Accountability:</strong> Ownership of outcomes and integrity.</li>
+                <li><strong class="text-primary">Growth:</strong> Continuous improvement.</li>
+                <li><strong class="text-primary">Innovation:</strong> Future-ready solutions.</li>
+                <li><strong class="text-primary">Leadership:</strong> Empowering teams to lead with clarity.</li>
+                <li><strong class="text-primary">Excellence:</strong> Maintaining the highest standards.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-secondary/10">
+        <div class="container">
+          <h2 class="text-4xl font-bold text-primary mb-12 text-center">Our Leadership</h2>
+          <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-secondary overflow-hidden flex flex-col md:flex-row">
+            <div class="md:w-1/3 bg-primary flex items-center justify-center p-8">
+               <div class="text-white text-center">
+                  <h3 class="text-2xl font-bold">Stanley Eluwa</h3>
+                  <p class="text-blue-100">Lead Consultant</p>
+               </div>
+            </div>
+            <div class="md:w-2/3 p-8">
+              <p class="text-foreground leading-relaxed">
+                Stanley Eluwa is a Lead Consultant with 20+ years of strategic HR and business leadership experience. He is a speaker, facilitator and coach who leads leadership and strategy workshops focused on leadership effectiveness, personal success and capability development.
+              </p>
+              <p class="text-foreground leading-relaxed mt-4">
+                His experience includes talent development, business transformation, HR transformation, process improvement and reengineering, job evaluation, organisational restructuring, and onboarding frameworks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-primary text-white py-12 border-t border-blue-800">
+      <div class="container text-center">
+        <p>© <span id="copyright-year">2026</span> ELSMITH Consulting. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

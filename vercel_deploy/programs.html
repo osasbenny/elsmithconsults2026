@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <title>Programs | Elsmith Consulting LTD</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/index-Ow2yCcMq.css">
+  <link rel="stylesheet" href="site_responsive.css">
+
+  <style>
+    body { font-family: 'Lato', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+    .elsmith-mobile-drawer { display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: white; z-index: 40; flex-direction: column; padding: 2rem; gap: 1.5rem; }
+  </style>
+</head>
+
+<body>
+  <div id="site-wrapper">
+    <nav class="sticky top-0 z-50 bg-white border-b border-secondary">
+      <div class="container flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition">
+          <img src="logo.jpg" alt="ELSMITH Consulting" class="h-12 w-auto" />
+        </a>
+        <div class="hidden md:flex gap-8">
+          <a href="index.html" class="text-foreground hover:text-accent transition">Home</a>
+          <a href="about.html" class="text-foreground hover:text-accent transition">About</a>
+          <a href="services.html" class="text-foreground hover:text-accent transition">Services</a>
+          <a href="programs.html" class="text-foreground hover:text-accent transition font-bold">Programs</a>
+          <a href="contact.html" class="text-foreground hover:text-accent transition">Contact</a>
+          <a href="contact.html" class="text-foreground hover:text-accent transition font-medium">Book a Session</a>
+        </div>
+        <button type="button" class="elsmith-mobile-menu-button md:hidden flex flex-col gap-1.5 p-2">
+          <span class="w-6 h-0.5 bg-primary"></span>
+          <span class="w-6 h-0.5 bg-primary"></span>
+          <span class="w-6 h-0.5 bg-primary"></span>
+        </button>
+      </div>
+    </nav>
+
+    <main>
+      <section class="bg-gradient-to-br from-primary to-blue-900 text-white py-20 md:py-28">
+        <div class="container">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6">Our Programs</h1>
+          <p class="text-xl text-blue-100 max-w-3xl">Enabling personal and professional growth through structured development programmes.</p>
+        </div>
+      </section>
+
+      <section class="py-16 md:py-24">
+        <div class="container">
+          <div class="grid md:grid-cols-2 gap-12">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-secondary">
+              <h2 class="text-3xl font-bold text-primary mb-6">LICENSE to WORK™</h2>
+              <p class="text-lg mb-6">A six-month Graduate Employability Programme for fresh graduates and professionals with 0–3 years of experience.</p>
+              <ul class="space-y-3 mb-8">
+                <li>✓ 3 months classroom learning</li>
+                <li>✓ 3 months internship experience</li>
+                <li>✓ Hybrid delivery format</li>
+                <li>✓ Certification upon completion</li>
+              </ul>
+              <a href="contact.html" class="bg-primary text-white px-6 py-3 rounded-lg inline-block font-bold">Apply Now</a>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-secondary">
+              <h2 class="text-3xl font-bold text-primary mb-6">Executive Coaching</h2>
+              <p class="text-lg mb-6">Structured development partnership designed to enhance leadership capability and performance.</p>
+              <p class="font-bold text-primary mb-4">Lead Coach: Joyce Coker</p>
+              <p class="text-sm italic mb-8">Managing Partner with Leadership experience across Financial Services, Consulting, and Consumer Goods.</p>
+              <a href="contact.html" class="bg-accent text-white px-6 py-3 rounded-lg inline-block font-bold">Book a Session</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-primary text-white py-12 border-t border-blue-800">
+      <div class="container text-center">
+        <p>© <span id="copyright-year">2026</span> ELSMITH Consulting. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

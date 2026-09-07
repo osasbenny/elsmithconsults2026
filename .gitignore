@@ -1,0 +1,9 @@
+# Private production configuration
+api/config.php
+storage/
+
+# Local audit and temporary files
+index.html.pre-update
+*.log
+
+.vercel
