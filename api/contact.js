@@ -6,49 +6,46 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = req.body;
+    const { name, email, phone, company, subject, message, website } = req.body;
 
-    // Honeypot check
-    if (payload.website) {
-      return res.status(200).json({ success: true, message: 'Your enquiry has been received.' });
+    // Honeypot check (Silent discard)
+    if (website) {
+      return res.status(200).json({ success: true, message: 'Enquiry received.' });
     }
-
-    const { name, email, phone, company, subject, message } = payload;
 
     if (!name || !message || !email) {
       return res.status(422).json({ success: false, error: 'Please complete all required fields.' });
     }
 
-    // High compatibility transporter for Vercel -> cPanel SMTP
     const transporter = nodemailer.createTransport({
       host: 'mail.elsmithconsulting.com',
       port: 465,
-      secure: true, // SSL/TLS
+      secure: true,
       auth: {
         user: 'info@elsmithconsulting.com',
-        pass: '$R!e0KzGp02ca]zE' // Fixed: use 'pass' instead of 'password'
+        pass: '$R!e0KzGp02ca]zE'
       },
       tls: {
-        rejectUnauthorized: false // Skip cert validation for private servers
+        rejectUnauthorized: false
       },
-      connectionTimeout: 15000,
-      greetingTimeout: 15000
+      connectionTimeout: 10000,
+      greetingTimeout: 10000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });
 
     const html = `
       <div style="font-family:sans-serif;color:#333;line-height:1.6;max-width:600px;margin:auto;border:1px solid #eee;padding:20px;">
-        <h2 style="color:#263445;border-bottom:2px solid #e99253;padding-bottom:10px;">New Website Enquiry</h2>
+        <h2 style="color:#123b78;border-bottom:2px solid #e99253;padding-bottom:10px;">New Website Enquiry</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
         <p><strong>Company:</strong> ${company || 'Not provided'}</p>
-        <p><strong>Subject:</strong> ${subject || 'General Enquiry'}</p>
+        <p><strong>Reason:</strong> ${subject || 'General Enquiry'}</p>
         <p><strong>Message:</strong></p>
-        <div style="background:#f9f9f9;padding:15px;border-radius:5px;">${message}</div>
+        <div style="background:#f9f9f9;padding:15px;border-radius:5px;border-left:4px solid #123b78;">${message}</div>
         <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
-        <p style="font-size:12px;color:#999;">Sent from ELSMITH Website at ${timestamp}</p>
+        <p style="font-size:11px;color:#999;">Sent from ELSMITH Website at ${timestamp}</p>
       </div>
     `;
 
@@ -56,20 +53,20 @@ export default async function handler(req, res) {
       from: '"ELSMITH Website" <info@elsmithconsulting.com>',
       to: 'info@elsmithconsulting.com',
       replyTo: email,
-      subject: `New enquiry from ${name}`,
+      subject: `Enquiry: ${name} — ${subject || 'General'}`,
       html: html
     });
 
     return res.status(200).json({
       success: true,
-      message: 'Your enquiry has been received successfully.'
+      message: 'Your enquiry has been received successfully. We will get back to you shortly.'
     });
 
   } catch (error) {
     console.error('SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: `Mail Delivery Failed. ${error.message}`
+      error: `Mail delivery error. Please email us directly at info@elsmithconsulting.com`
     });
   }
 }
