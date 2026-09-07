@@ -115,7 +115,7 @@
         try {
           const res = await fetch('/api/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...s.details, date: s.date, time: s.time }) });
           const data = await res.json();
-          if (data.success) body.innerHTML = `<div class="text-center space-y-4"><h3>Booking Requested</h3><p>${data.message}</p><button class="elsmith-booking-primary" onclick="location.reload()">Done</button></div>`;
+          if (data.success) body.innerHTML = `<div class="text-center space-y-4"><h3>Booking Requested</h3><p>${data.message}</p><button class="elsmith-booking-primary" onclick="window.location.href='/'">Done</button></div>`;
           else throw new Error(data.error);
         } catch (err) { alert(err.message); e.target.disabled = false; e.target.textContent = 'Confirm Booking'; }
       };
