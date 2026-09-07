@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -68,7 +68,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('SMTP Booking Error:', error);
-    // Return a more descriptive error temporarily to help you see the issue
     return res.status(502).json({
       success: false,
       error: `Mail Delivery Failed. Technical details: ${error.message || 'Server error'}`
