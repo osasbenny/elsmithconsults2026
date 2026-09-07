@@ -19,14 +19,13 @@ export default async function handler(req, res) {
       secure: true, // Port 465 is always SSL
       auth: {
         user: 'info@elsmithconsulting.com',
-        password: '$R!e0KzGp02ca]zE'
+        pass: '$R!e0KzGp02ca]zE' // Fixed: use 'pass' instead of 'password'
       },
       tls: {
-        // Essential for cPanel SMTP from cloud environments
         rejectUnauthorized: false
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000
+      connectionTimeout: 15000,
+      greetingTimeout: 15000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });

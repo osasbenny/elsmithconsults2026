@@ -26,13 +26,13 @@ export default async function handler(req, res) {
       secure: true, // SSL/TLS
       auth: {
         user: 'info@elsmithconsulting.com',
-        password: '$R!e0KzGp02ca]zE'
+        pass: '$R!e0KzGp02ca]zE' // Fixed: use 'pass' instead of 'password'
       },
       tls: {
         rejectUnauthorized: false // Skip cert validation for private servers
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000
+      connectionTimeout: 15000,
+      greetingTimeout: 15000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     console.error('SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: 'The mail server returned an error. Please contact us directly at info@elsmithconsulting.com'
+      error: `Mail Delivery Failed. ${error.message}`
     });
   }
 }
