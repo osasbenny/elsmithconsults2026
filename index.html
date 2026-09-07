@@ -14,12 +14,10 @@
 
   <!-- Production Styles -->
   <link rel="stylesheet" crossorigin href="assets/index-Ow2yCcMq.css">
+  <link rel="stylesheet" href="booking_ui.css">
+  <link rel="stylesheet" href="site_responsive.css">
 
   <script>
-    /**
-     * ELSMITH PRODUCTION ENGINE
-     * Resolves initialization hangs and blocks broken dev redirects.
-     */
     window.__MANUS_HOST_DEV__ = false;
 
     (function() {
@@ -29,17 +27,7 @@
       window.location.assign = function(u) { if (!isDevUrl(u)) oa.apply(window.location, arguments); };
       window.location.replace = function(u) { if (!isDevUrl(u)) or.apply(window.location, arguments); };
 
-      // 2. Resolve bundled IDE runtime dependency (Passive handshake)
-      window.addEventListener('message', function(e) {
-        if (e.data && e.data.type === 'SpacePreviewerChannel') {
-          const p = e.data.payload;
-          if (p && p.type === 'getMessage' && p.payload.messageType === 'containerInited') {
-            window.postMessage({ type: 'SpacePreviewerChannel', payload: { type: 'containerInited', to: 'content' } }, '*');
-          }
-        }
-      });
-
-      // 3. API Interceptor for Vercel stability
+      // 2. API Interceptor for Vercel
       const of = window.fetch;
       window.fetch = function(url, options) {
         const urlStr = String(url);
@@ -51,6 +39,13 @@
         }
         return of.apply(this, arguments);
       };
+
+      // 3. Global Handshake Fix
+      window.addEventListener('message', function(e) {
+        if (e.data && e.data.type === 'SpacePreviewerChannel' && e.data.payload?.type === 'getMessage') {
+          window.postMessage({ type: 'SpacePreviewerChannel', payload: { type: 'containerInited', to: 'content' } }, '*');
+        }
+      });
     })();
   </script>
 </head>
@@ -61,10 +56,9 @@
   <!-- App Bundle -->
   <script type="module" crossorigin src="assets/index-ClrTScvG.js"></script>
 
-  <!-- Enhancement & Logic -->
+  <!-- Stabilization Scripts -->
   <script src="site_updates.js"></script>
   <script src="booking_ui.js"></script>
-  <link rel="stylesheet" href="booking_ui.css">
-  <link rel="stylesheet" href="site_responsive.css">
+  <script src="main.js"></script>
 </body>
 </html>
