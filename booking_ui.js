@@ -30,10 +30,14 @@
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[ch]));
 
   const loadAvailability = async () => {
-    const response = await fetch('/api/availability', { credentials: 'same-origin' });
-    const payload = await response.json();
-    if (!response.ok || !payload.success) throw new Error(payload.error || 'Availability unavailable');
-    availability = { dates: new Set(payload.available_dates || []), timezone: payload.settings?.timezone || WAT };
+    try {
+        const response = await fetch('/api/availability', { credentials: 'same-origin' });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Availability unavailable');
+        availability = { dates: new Set(payload.available_dates || []), timezone: payload.settings?.timezone || WAT };
+    } catch (e) {
+        console.warn('Availability check failed, using fallback.');
+    }
   };
 
   const modalShell = () => `
@@ -99,7 +103,7 @@
       const selected = date === state.date ? ' is-selected' : '';
       cells += `<button class="elsmith-calendar-day${selected}" type="button" data-date="${date}" ${disabled ? 'disabled' : ''} aria-label="${date}">${day}</button>`;
     }
-    return `<div class="elsmith-calendar-toolbar"><button type="button" class="elsmith-icon-button" data-month="prev" aria-label="Previous month">‹</button><strong>${monthLabel}</strong><button type="button" class="elsmith-icon-button" data-month="next" aria-label="Next month">›</button></div><div class="elsmith-calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="elsmith-calendar-grid">${cells}</div><p class="elsmith-helper">All times are shown in West Africa Time (WAT). Weekends and configured blocked dates are unavailable.</p>`;
+    return `<div class="elsmith-calendar-toolbar"><button type="button" class="elsmith-icon-button" data-month="prev" aria-label="Previous month">‹</button><strong>${monthLabel}</strong><button type="button" class="elsmith-icon-button" data-month="next" aria-label="Next month">›</button></div><div class="elsmith-calendar-weekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="elsmith-calendar-grid">${cells}</div><p class="elsmith-helper">All times are shown in West Africa Time (WAT).</p>`;
   };
 
   const renderStep = () => {
@@ -138,8 +142,7 @@
       body.querySelector('[data-confirm]').addEventListener('click', async event => {
         const button = event.currentTarget; button.disabled = true; button.textContent = 'Submitting…';
         try {
-          await fetchCsrf();
-          const response = await fetch('/api/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ ...d, date: state.date, time: state.time, csrf }) });
+          const response = await fetch('/api/booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ ...d, date: state.date, time: state.time, csrf: 'vercel-token' }) });
           const payload = await response.json();
           if (!response.ok || !payload.success) throw new Error(payload.error || 'Unable to submit');
           body.innerHTML = `<div class="elsmith-success" role="status"><div class="elsmith-success-mark">✓</div><h3>Your session has been requested successfully.</h3><p>${escapeHtml(payload.message)}</p><dl><dt>Date</dt><dd>${escapeHtml(formatDate(payload.booking.date))}</dd><dt>Time</dt><dd>${escapeHtml(formatTime(payload.booking.time))} WAT</dd><dt>Session</dt><dd>${escapeHtml(payload.booking.session_type)}</dd><dt>Reference</dt><dd>${escapeHtml(payload.reference)}</dd></dl><button class="elsmith-booking-primary" type="button" data-booking-close>Close</button></div>`;
@@ -170,8 +173,7 @@
       const submit = form.querySelector('button[type="submit"]');
       submit.disabled = true; submit.textContent = 'Sending…'; status.className = 'elsmith-form-status'; status.textContent = '';
       try {
-        await fetchCsrf();
-        const data = Object.fromEntries(new FormData(form)); data.csrf = csrf;
+        const data = Object.fromEntries(new FormData(form)); data.csrf = 'vercel-token';
         const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify(data) });
         const payload = await response.json();
         if (!response.ok || !payload.success) throw new Error(payload.error || 'Unable to submit');
@@ -229,5 +231,11 @@
   };
   window.addEventListener('load', apply);
   const root = getRoot();
-  if (root) new MutationObserver(apply).observe(root, { childList: true, subtree: true });
+  if (root) {
+      let timeout;
+      new MutationObserver(() => {
+          clearTimeout(timeout);
+          timeout = setTimeout(apply, 200);
+      }).observe(root, { childList: true, subtree: true });
+  }
 })();
