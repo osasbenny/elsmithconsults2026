@@ -8,10 +8,7 @@ export default async function handler(req, res) {
   try {
     const { name, email, phone, company, session_type, message, date, time, website } = req.body;
 
-    // Honeypot check
-    if (website) {
-      return res.status(200).json({ success: true, message: 'Booking requested.' });
-    }
+    if (website) return res.status(200).json({ success: true, message: 'Booking requested.' });
 
     if (!name || !phone || !session_type || !date || !time) {
       return res.status(422).json({ success: false, error: 'Please complete all required fields.' });
@@ -25,11 +22,9 @@ export default async function handler(req, res) {
         user: 'info@elsmithconsulting.com',
         pass: '$R!e0KzGp02ca]zE'
       },
-      tls: {
-        rejectUnauthorized: false
-      },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });
@@ -55,10 +50,10 @@ export default async function handler(req, res) {
     `;
 
     await transporter.sendMail({
-      from: '"ELSMITH Website" <info@elsmithconsulting.com>',
+      from: 'info@elsmithconsulting.com', // Strictly matching user
       to: 'info@elsmithconsulting.com',
       replyTo: email,
-      subject: `Booking Request: ${name} — ${date} ${time}`,
+      subject: `Booking Request: ${name}`,
       html: html
     });
 
@@ -66,14 +61,13 @@ export default async function handler(req, res) {
       success: true,
       reference,
       booking: { date, time, session_type },
-      message: 'Your session has been requested successfully. A member of our team will follow up shortly.'
+      message: 'Your session has been requested successfully.'
     });
 
   } catch (error) {
-    console.error('SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: `Mail delivery error. Please contact us directly at info@elsmithconsulting.com`
+      error: `Technical Error: ${error.message}. Please email us directly at info@elsmithconsulting.com`
     });
   }
 }

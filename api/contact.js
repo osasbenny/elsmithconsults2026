@@ -8,10 +8,7 @@ export default async function handler(req, res) {
   try {
     const { name, email, phone, company, subject, message, website } = req.body;
 
-    // Honeypot check (Silent discard)
-    if (website) {
-      return res.status(200).json({ success: true, message: 'Enquiry received.' });
-    }
+    if (website) return res.status(200).json({ success: true, message: 'Enquiry received.' });
 
     if (!name || !message || !email) {
       return res.status(422).json({ success: false, error: 'Please complete all required fields.' });
@@ -25,11 +22,9 @@ export default async function handler(req, res) {
         user: 'info@elsmithconsulting.com',
         pass: '$R!e0KzGp02ca]zE'
       },
-      tls: {
-        rejectUnauthorized: false
-      },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });
@@ -50,23 +45,22 @@ export default async function handler(req, res) {
     `;
 
     await transporter.sendMail({
-      from: '"ELSMITH Website" <info@elsmithconsulting.com>',
+      from: 'info@elsmithconsulting.com', // Strictly matching user
       to: 'info@elsmithconsulting.com',
       replyTo: email,
-      subject: `Enquiry: ${name} — ${subject || 'General'}`,
+      subject: `Web Enquiry: ${name}`,
       html: html
     });
 
     return res.status(200).json({
       success: true,
-      message: 'Your enquiry has been received successfully. We will get back to you shortly.'
+      message: 'Your enquiry has been received successfully.'
     });
 
   } catch (error) {
-    console.error('SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: `Mail delivery error. Please email us directly at info@elsmithconsulting.com`
+      error: `Technical Error: ${error.message}. Please email us directly at info@elsmithconsulting.com`
     });
   }
 }
