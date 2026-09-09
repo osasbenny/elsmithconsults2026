@@ -14,8 +14,6 @@
 
   <!-- Production Styles -->
   <link rel="stylesheet" crossorigin href="assets/index-Ow2yCcMq.css">
-  <link rel="stylesheet" href="booking_ui.css">
-  <link rel="stylesheet" href="site_responsive.css">
 
   <script>
     window.__MANUS_HOST_DEV__ = false;
@@ -27,11 +25,15 @@
       window.location.assign = function(u) { if (!isDevUrl(u)) oa.apply(window.location, arguments); };
       window.location.replace = function(u) { if (!isDevUrl(u)) or.apply(window.location, arguments); };
 
-      // 2. API Interceptor for Vercel
+      // 2. API Interceptor - Only block GET requests to satisfy app initialization
       const of = window.fetch;
       window.fetch = function(url, options) {
         const urlStr = String(url);
-        if (urlStr.includes('/api/trpc') || urlStr.includes('/api/oauth')) {
+        const method = (options && options.method || 'GET').toUpperCase();
+
+        // Only intercept GET requests to prevent hanging.
+        // Allow POST requests to reach our real backend handlers.
+        if (method === 'GET' && (urlStr.includes('/api/trpc') || urlStr.includes('/api/oauth'))) {
           const mock = urlStr.includes('batch=1') ? [{ result: { data: {} } }] : { result: { data: {} } };
           return Promise.resolve(new Response(JSON.stringify(mock), {
             status: 200, headers: { 'Content-Type': 'application/json' }
@@ -59,6 +61,7 @@
   <!-- Stabilization Scripts -->
   <script src="site_updates.js"></script>
   <script src="booking_ui.js"></script>
-  <script src="main.js"></script>
+  <link rel="stylesheet" href="booking_ui.css">
+  <link rel="stylesheet" href="site_responsive.css">
 </body>
 </html>
