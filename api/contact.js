@@ -6,10 +6,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, email, phone, company, subject, message, website } = req.body;
+    const { name, email, phone, company, subject, message } = req.body;
 
-    if (website) return res.status(200).json({ success: true, message: 'Enquiry received.' });
-
+    // VALIDATION
     if (!name || !message || !email) {
       return res.status(422).json({ success: false, error: 'Please complete all required fields.' });
     }
@@ -61,10 +60,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('SMTP Error:', error);
+    console.error('Contact SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: `Mail Delivery Failed: ${error.message}. Please contact us directly at info@elsmithconsulting.com`
+      error: `Mail Delivery Failed: ${error.message}`
     });
   }
 }
