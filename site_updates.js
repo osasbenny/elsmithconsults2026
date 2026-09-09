@@ -1,6 +1,6 @@
 /**
- * ELSMITH Site Updates - Professional Content Injection
- * Safely applies text and layout updates without causing infinite loops.
+ * ELSMITH Site Updates - Professional Content Injection & Form Hijacking
+ * Safely applies text updates and ensures form deliverability.
  */
 (() => {
   const apply = () => {
@@ -8,7 +8,6 @@
     if (!root || !root.children.length) return;
 
     const textNodes = (selector = '*') => [...root.querySelectorAll(selector)];
-    const findByText = (text) => textNodes().find(el => el.textContent.includes(text) && el.childElementCount === 0);
     const heading = (value) => textNodes('h1,h2,h3,h4,h5').find((el) => el.textContent.trim() === value);
     const make = (tag, className, text) => {
       const el = document.createElement(tag);
@@ -28,16 +27,39 @@
       }
     });
 
-    // 2. Profile & Hero Updates
-    const heroLeadText = 'ELSMITH Consulting is a global business and workforce advisory firm dedicated to transforming organizations through strategic insights, leadership development, and innovative solutions.';
-    const heroLead = findByText(heroLeadText);
-    if (heroLead) heroLead.textContent = 'ELSMITH Consulting is a performance-focused organisation dedicated to enabling business excellence and driving impactful transformation.';
+    // 2. Profile & Text Updates (Aggressive replacement)
+    textNodes().forEach(el => {
+        if (el.textContent.includes('Lead Consultant & Founder')) {
+            el.textContent = 'Lead Consultant';
+        }
+        if (el.textContent.includes('Stanley Eluwa is the visionary founder')) {
+            el.textContent = 'Stanley Eluwa is a Lead Consultant with 20+ years of strategic HR and business leadership experience. He is a speaker, facilitator and coach who leads leadership and strategy workshops focused on leadership effectiveness, personal success and capability development.';
+        }
+        if (el.textContent.includes('ELSMITH Consulting is a global business and workforce advisory firm dedicated to transforming organizations')) {
+            el.textContent = 'ELSMITH Consulting is a performance-focused organisation dedicated to enabling business excellence and driving impactful transformation.';
+        }
+        // 3. Remove Calendly Placeholders
+        if (el.textContent.includes('Booking Widget Placeholder')) {
+            el.textContent = 'Schedule Your Executive Session';
+            el.style.color = '#123b78';
+            el.style.fontWeight = 'bold';
+            el.style.fontSize = '1.8rem';
+            el.style.display = 'block';
+        }
+        if (el.textContent.includes('actual calendar widget')) {
+            el.textContent = 'Click the button below to open our custom scheduler and secure your spot.';
+        }
+        if (el.textContent.includes('Go to Booking Page')) {
+            el.textContent = 'Open Booking Scheduler';
+            const a = el.closest('a');
+            if (a) {
+                a.href = '#';
+                a.classList.add('elsmith-trigger-booking');
+            }
+        }
+    });
 
-    const founderParaText = 'Stanley Eluwa is the visionary founder and lead consultant at ELSMITH Consulting. With over two decades of experience in business advisory, organizational transformation, and talent development, Stanley has successfully guided numerous organizations across Africa, Europe, and the Middle East through complex transformation journeys.';
-    const founderPara = findByText(founderParaText);
-    if (founderPara) founderPara.textContent = 'Stanley Eluwa is a Lead Consultant with 20+ years of strategic HR and business leadership experience. He is a speaker, facilitator and coach who leads leadership and strategy workshops focused on leadership effectiveness, personal success and capability development.';
-
-    // 3. Values Section
+    // 4. Values Section
     const valuesHeading = heading('Our Values');
     if (valuesHeading && !root.querySelector('[data-elsmith-values-applied]')) {
       const detail = make('div', 'mt-6 space-y-3 text-foreground', '');
@@ -54,7 +76,66 @@
       valuesHeading.parentElement.append(detail);
     }
 
-    // 4. Copyright Year
+    // 5. HIJACK CONTACT FORM (Make it work exactly like the Booking Modal)
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        // Skip the booking modal form which is already handled in booking_ui.js
+        if (form.closest('.elsmith-booking-modal')) return;
+
+        if (!form.dataset.elsmithHijacked) {
+            form.dataset.elsmithHijacked = 'true';
+
+            // Add Phone and Subject if missing (Contact page specific)
+            if (window.location.pathname.includes('contact') && !form.querySelector('input[name="phone"]')) {
+                const msgField = form.querySelector('textarea[name="message"]');
+                if (msgField) {
+                    const extra = document.createElement('div');
+                    extra.className = "grid grid-cols-1 md:grid-cols-2 gap-4 mb-4";
+                    extra.innerHTML = `
+                        <div><label class="block text-sm font-bold text-primary mb-1">Phone</label><input name="phone" placeholder="+234..." class="w-full px-4 py-2 border rounded-lg"></div>
+                        <div><label class="block text-sm font-bold text-primary mb-1">Subject</label><select name="subject" class="w-full px-4 py-2 border rounded-lg"><option>General Enquiry</option><option>Executive Coaching</option><option>Business Advisory</option></select></div>
+                    `;
+                    msgField.parentElement.before(extra);
+                }
+            }
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const btn = form.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+
+                try {
+                    const formData = new FormData(form);
+                    const payload = Object.fromEntries(formData.entries());
+
+                    const response = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Success: Your message has been sent successfully.');
+                        form.reset();
+                    } else {
+                        throw new Error(result.error || 'Server error');
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            };
+        }
+    });
+
+    // 6. Copyright Year
     const year = new Date().getFullYear();
     textNodes().forEach((el) => {
       if (el.childElementCount === 0 && el.textContent.includes('©') && el.textContent.includes('ELSMITH Consulting')) {
@@ -62,29 +143,6 @@
             el.textContent = `© ${year} ELSMITH Consulting. All rights reserved.`;
           }
       }
-    });
-
-    // 5. Remove Calendly Placeholders (Aggressive)
-    textNodes().forEach(el => {
-        if (el.textContent.includes('Booking Widget Placeholder')) {
-            el.textContent = 'Schedule Your Executive Session';
-            el.style.color = '#123b78';
-            el.style.fontWeight = 'bold';
-            el.style.fontSize = '1.8rem';
-            el.style.display = 'block';
-            el.style.margin = '20px 0';
-        }
-        if (el.textContent.includes('actual calendar widget')) {
-            el.textContent = 'Click the button below to open our custom scheduler and secure your spot.';
-        }
-        if (el.textContent.includes('Go to Booking Page')) {
-            el.textContent = 'Open Booking Scheduler';
-            const a = el.closest('a');
-            if (a) {
-                a.href = '#';
-                a.classList.add('elsmith-trigger-booking');
-            }
-        }
     });
   };
 
