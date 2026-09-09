@@ -1,14 +1,16 @@
 /**
- * ELSMITH Site Updates - Professional Content Injection & Form Hijacking
- * Safely applies text updates and ensures form deliverability.
+ * ELSMITH Site Updates - Professional Content Injection (Safe Version)
+ * Fixes the "vanishing homepage" by only targeting leaf nodes for text replacement.
  */
 (() => {
   const apply = () => {
     const root = document.getElementById('root');
     if (!root || !root.children.length) return;
 
-    const textNodes = (selector = '*') => [...root.querySelectorAll(selector)];
-    const heading = (value) => textNodes('h1,h2,h3,h4,h5').find((el) => el.textContent.trim() === value);
+    // Helper: Find only elements with no children (leaf nodes) to prevent overwriting containers
+    const leafNodes = () => [...root.querySelectorAll('*')].filter(el => el.children.length === 0);
+
+    const heading = (value) => [...root.querySelectorAll('h1,h2,h3,h4,h5')].find((el) => el.textContent.trim() === value);
     const make = (tag, className, text) => {
       const el = document.createElement(tag);
       if (className) el.className = className;
@@ -27,39 +29,40 @@
       }
     });
 
-    // 2. Profile & Text Updates (Aggressive replacement)
-    textNodes().forEach(el => {
-        if (el.textContent.includes('Lead Consultant & Founder')) {
+    // 2. Safe Text Replacements (Only targeting leaf elements)
+    leafNodes().forEach(el => {
+        const txt = el.textContent.trim();
+
+        if (txt === 'Lead Consultant & Founder') {
             el.textContent = 'Lead Consultant';
         }
-        if (el.textContent.includes('Stanley Eluwa is the visionary founder')) {
+
+        if (txt.includes('Stanley Eluwa is the visionary founder')) {
             el.textContent = 'Stanley Eluwa is a Lead Consultant with 20+ years of strategic HR and business leadership experience. He is a speaker, facilitator and coach who leads leadership and strategy workshops focused on leadership effectiveness, personal success and capability development.';
         }
-        if (el.textContent.includes('ELSMITH Consulting is a global business and workforce advisory firm dedicated to transforming organizations')) {
+
+        if (txt.includes('ELSMITH Consulting is a global business and workforce advisory firm dedicated to transforming organizations')) {
             el.textContent = 'ELSMITH Consulting is a performance-focused organisation dedicated to enabling business excellence and driving impactful transformation.';
         }
+
         // 3. Remove Calendly Placeholders
-        if (el.textContent.includes('Booking Widget Placeholder')) {
+        if (txt === '**Booking Widget Placeholder**') {
             el.textContent = 'Schedule Your Executive Session';
             el.style.color = '#123b78';
             el.style.fontWeight = 'bold';
             el.style.fontSize = '1.8rem';
-            el.style.display = 'block';
         }
-        if (el.textContent.includes('actual calendar widget')) {
+
+        if (txt.includes('actual calendar widget')) {
             el.textContent = 'Click the button below to open our custom scheduler and secure your spot.';
         }
-        if (el.textContent.includes('Go to Booking Page')) {
+
+        if (txt === 'Go to Booking Page (Placeholder Link)') {
             el.textContent = 'Open Booking Scheduler';
-            const a = el.closest('a');
-            if (a) {
-                a.href = '#';
-                a.classList.add('elsmith-trigger-booking');
-            }
         }
     });
 
-    // 4. Values Section
+    // 4. Values Section Detail Injection
     const valuesHeading = heading('Our Values');
     if (valuesHeading && !root.querySelector('[data-elsmith-values-applied]')) {
       const detail = make('div', 'mt-6 space-y-3 text-foreground', '');
@@ -76,16 +79,15 @@
       valuesHeading.parentElement.append(detail);
     }
 
-    // 5. HIJACK CONTACT FORM (Make it work exactly like the Booking Modal)
+    // 5. Form Hijack (Contact Form)
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
-        // Skip the booking modal form which is already handled in booking_ui.js
         if (form.closest('.elsmith-booking-modal')) return;
 
         if (!form.dataset.elsmithHijacked) {
             form.dataset.elsmithHijacked = 'true';
 
-            // Add Phone and Subject if missing (Contact page specific)
+            // Add Phone/Subject fields if on Contact page and they are missing
             if (window.location.pathname.includes('contact') && !form.querySelector('input[name="phone"]')) {
                 const msgField = form.querySelector('textarea[name="message"]');
                 if (msgField) {
@@ -101,30 +103,23 @@
 
             form.onsubmit = async (e) => {
                 e.preventDefault();
-                e.stopPropagation();
-
                 const btn = form.querySelector('button[type="submit"]');
                 const originalText = btn.textContent;
                 btn.disabled = true;
                 btn.textContent = 'Sending...';
 
                 try {
-                    const formData = new FormData(form);
-                    const payload = Object.fromEntries(formData.entries());
-
+                    const payload = Object.fromEntries(new FormData(form).entries());
                     const response = await fetch('/api/contact', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-
                     const result = await response.json();
                     if (result.success) {
                         alert('Success: Your message has been sent successfully.');
                         form.reset();
-                    } else {
-                        throw new Error(result.error || 'Server error');
-                    }
+                    } else throw new Error(result.error);
                 } catch (error) {
                     alert('Error: ' + error.message);
                 } finally {
@@ -135,10 +130,10 @@
         }
     });
 
-    // 6. Copyright Year
+    // 6. Copyright Year Stability
     const year = new Date().getFullYear();
-    textNodes().forEach((el) => {
-      if (el.childElementCount === 0 && el.textContent.includes('©') && el.textContent.includes('ELSMITH Consulting')) {
+    [...root.querySelectorAll('*')].forEach((el) => {
+      if (el.children.length === 0 && el.textContent.includes('©') && el.textContent.includes('ELSMITH Consulting')) {
           if (!el.textContent.includes(year.toString())) {
             el.textContent = `© ${year} ELSMITH Consulting. All rights reserved.`;
           }
@@ -147,5 +142,5 @@
   };
 
   window.addEventListener('load', apply);
-  setInterval(apply, 1000);
+  setInterval(apply, 2000);
 })();
