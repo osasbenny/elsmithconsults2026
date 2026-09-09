@@ -14,7 +14,6 @@ export default async function handler(req, res) {
       return res.status(422).json({ success: false, error: 'Please complete all required fields.' });
     }
 
-    // BYPASS DNS: Using the server IP directly to resolve the "EBUSY / Non-existent domain" error
     const transporter = nodemailer.createTransport({
       host: '51.75.82.47',
       port: 465,
@@ -25,10 +24,10 @@ export default async function handler(req, res) {
       },
       tls: {
         rejectUnauthorized: false,
-        servername: 'mail.elsmithconsulting.com' // Explicitly set hostname for SSL handshake
+        servername: 'mail.elsmithconsulting.com'
       },
-      connectionTimeout: 20000,
-      greetingTimeout: 20000
+      connectionTimeout: 15000,
+      greetingTimeout: 15000
     });
 
     const timestamp = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' });
@@ -62,10 +61,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Contact SMTP Error:', error);
+    console.error('SMTP Error:', error);
     return res.status(502).json({
       success: false,
-      error: `Mail Delivery Failed: ${error.message}`
+      error: `Mail Delivery Failed: ${error.message}. Please contact us directly at info@elsmithconsulting.com`
     });
   }
 }
